@@ -1,10 +1,11 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 
 __author__ = "Joel Pedraza"
 __copyright__ = "Copyright 2014, Joel Pedraza"
 __license__ = "MIT"
 
-import utils
+from hibget import requests_logging, utils
+from hibget.widgets import pacman_progress_bar
 
 import humblebundle
 from humblebundle.exceptions import *
@@ -15,17 +16,14 @@ from requests.adapters import DEFAULT_POOLSIZE, HTTPAdapter
 from requests.exceptions import RequestException
 from urllib.parse import urlparse
 
-import logging
-import requests_logging
-
 import appdirs
 import argparse
 from concurrent.futures import CancelledError, ThreadPoolExecutor
 from configparser import ConfigParser
 from getpass import getpass
+import logging
 import random
 import time
-from widgets import pacman_progress_bar
 import os
 import signal
 import sys

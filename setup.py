@@ -15,7 +15,8 @@ setup(name='hibget',
       author='Joel Pedraza',
       author_email='joel@joelpedraza.com',
       url='https://github.com/saik0/hibget',
+      download_url='https://github.com/saik0/hibget/tarball/0.0.1',
       install_requires=['requests >= 2.0.0', 'appdirs'],
       packages=['hibget'],
-      scripts=['hibget/hibget.py']
+      scripts=['bin/hibget']
      )
