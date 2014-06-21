@@ -10,7 +10,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='hibget',
-      version='0.1',
+      version='0.0.1',
       description='Humble Indie Bundle Downloader',
       author='Joel Pedraza',
       author_email='joel@joelpedraza.com',
