@@ -225,7 +225,7 @@ class HibGet:
         self.logger.setLevel(level)
         sh.setLevel(level)
 
-    def find_url(self, order_list):
+    def find_url(self, gamekeys):
         """
         Get the url for a given filename. Downloads each order in a separate thread, blocking until a match is found or
         all orders have been processed.
@@ -235,7 +235,7 @@ class HibGet:
         self.logger.info("Processing orders")
         pending = set()
         signed_url = None
-        random.shuffle(order_list)  # amortize lookup time
+        random.shuffle(gamekeys)  # amortize lookup time
 
         # Perform on main thread after each task completes
         def foreground_callback(t):
@@ -263,8 +263,8 @@ class HibGet:
                                 signed_url = struct.url.web
 
         # Start tasks
-        for order in order_list:
-            task = self.executor.submit(self.client.order, order.gamekey, callback=background_callback)
+        for gamekey in gamekeys:
+            task = self.executor.submit(self.client.get_order, gamekey, callback=background_callback)
             pending.add(task)
             task.add_done_callback(foreground_callback)
 
@@ -337,13 +337,13 @@ class HibGet:
         self.settings.prompt_store_creds()
         return True
 
-    def get_order_list(self):
+    def get_gamekeys(self):
         try:
-            return self.client.order_list()
+            return self.client.get_gamekeys()
         except HumbleAuthenticationException as e:
             self.logger.error("Failed to get order list: %s", utils.format_error(e))
             self.login()
-            return self.get_order_list()
+            return self.get_gamekeys()
 
     def run(self):
         try:
@@ -361,14 +361,14 @@ class HibGet:
 
     def _start(self):
         try:
-            order_list = self.get_order_list()
+            gamekeys = self.get_gamekeys()
         except RequestException as e:
             self.logger.critical("Failed to get order list: %s", utils.format_error(e))
             self.logger.debug(e)
             sys.exit(1)
 
         try:
-            signed_url = self.find_url(order_list)
+            signed_url = self.find_url(gamekeys)
         except HumbleException as e:
             self.logger.critical("Failed to find {filename}: %s".format(filename=self.settings.filename),
                                  utils.format_error(e))
